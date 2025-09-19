@@ -1,4 +1,5 @@
 - name: Creating Headless Chromium Configuration
+  tags: build-chrome
   copy:
     content: |
       import("//build/args/headless.gn")
@@ -23,18 +24,21 @@
     dest: /srv/source/chromium/src/out/Headless/x64/args.gn
 
 - name: Generating Headless Chromium Configuration
+  tags: build-chrome
   shell: |
     gn gen out/Headless/x64
   args:
     chdir: /srv/source/chromium/src
 
 - name: Compiling Headless Chromium
+  tags: build-chrome
   shell: |
     autoninja -C out/Headless/x64 headless_shell
   args:
     chdir: /srv/source/chromium/src
 
 - name: Getting Chromium Version
+  tags: [build-chrome, compress-and-download-chrome]
   shell: |
     sed --regexp-extended 's~[^0-9]+~~g' chrome/VERSION | tr '\n' '.' | sed 's~[.]$~~'
   args:
@@ -42,12 +46,14 @@
   register: version
 
 - name: Striping Symbols from Chromium (x64) Binary
+  tags: build-chrome
   shell: |
     strip -o /srv/build/chromium/chromium-{{ version.stdout | quote }} out/Headless/x64/headless_shell
   args:
     chdir: /srv/source/chromium/src
 
 - name: Compressing Chromium
+  tags: compress-and-download-chrome
   shell: |
     brotli --best --force {{ item }}
   args:
@@ -56,6 +62,7 @@
     - "chromium-{{ version.stdout }}"
 
 - name: Downloading Chromium
+  tags: compress-and-download-chrome
   fetch:
     src: "/srv/build/chromium/{{ item }}"
     dest: ../../../bin/x64/
@@ -65,6 +72,7 @@
     - "chromium-{{ version.stdout }}.br"
 
 - name: Archiving OpenGL ES driver
+  tags: compress-and-download-chrome
   shell: |
     tar --directory /srv/source/chromium/src/out/Headless/x64 --create --file swiftshader.tar libEGL.so libGLESv2.so libvk_swiftshader.so libvulkan.so.1 vk_swiftshader_icd.json
   args:
@@ -72,6 +80,7 @@
     creates: /srv/build/chromium/swiftshader.tar
 
 - name: Compressing OpenGL ES driver
+  tags: compress-and-download-chrome
   shell: |
     brotli --best --force swiftshader.tar
   args:
@@ -79,6 +88,7 @@
     creates: /srv/build/chromium/swiftshader.tar.br
 
 - name: Downloading OpenGL ES driver
+  tags: compress-and-download-chrome
   fetch:
     src: /srv/build/chromium/swiftshader.tar.br
     dest: ../../../bin/x64/
@@ -86,6 +96,7 @@
     fail_on_missing: true
 
 - name: Creating AL2023 Package
+  tags: compress-and-download-chrome
   shell: |
     tar --directory /usr/lib64 --create --file al2023.tar \
     --transform='s,^libexpat\.so\.1\.9\.3$,libexpat.so.1,' \
@@ -96,6 +107,7 @@
     creates: /srv/lib/al2023.tar
 
 - name: Compressing AL2023 Package
+  tags: compress-and-download-chrome
   shell: |
     brotli --best --force al2023.tar
   args:
@@ -103,6 +115,7 @@
     creates: /srv/lib/al2023.tar.br
 
 - name: Downloading AL2023 Package
+  tags: compress-and-download-chrome
   fetch:
     src: /srv/lib/al2023.tar.br
     dest: ../../../bin/x64/

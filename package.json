@@ -1,6 +1,6 @@
 {
-  "name": "@sparticuz/chromium",
-  "version": "138.0.2",
+  "name": "@tableau/fork-sparticuz-chromium",
+  "version": "141.0.7382",
   "description": "Chromium Binary for Serverless Platforms",
   "keywords": [
     "aws",
@@ -12,13 +12,13 @@
     "playwright",
     "serverless"
   ],
-  "homepage": "https://github.com/Sparticuz/chromium",
+  "homepage": "https://github.com/gauravrmazra/chromium",
   "bugs": {
-    "url": "https://github.com/Sparticuz/chromium/issues"
+    "url": "https://github.com/gauravrmazra/chromium/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Sparticuz/chromium.git"
+    "url": "git://github.com/gauravrmazra/chromium.git"
   },
   "license": "MIT",
   "author": {

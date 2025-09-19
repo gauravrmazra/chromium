@@ -1,4 +1,5 @@
 - name: Creating Headless Chromium Configuration
+  tags: build-chrome
   copy:
     content: |
       import("//build/args/headless.gn")
@@ -23,24 +24,28 @@
     dest: /srv/source/chromium/src/out/Headless/arm64/args.gn
 
 - name: Building ARM64 Sysroot
+  tags: build-chrome
   shell: |
     ./build/linux/sysroot_scripts/install-sysroot.py --arch=arm64
   args:
     chdir: /srv/source/chromium/src
 
 - name: Generating Headless Chromium Configuration
+  tags: build-chrome
   shell: |
     gn gen out/Headless/arm64
   args:
     chdir: /srv/source/chromium/src
 
 - name: Compiling Headless Chromium
+  tags: build-chrome
   shell: |
     autoninja -C out/Headless/arm64 headless_shell
   args:
     chdir: /srv/source/chromium/src
 
 - name: Getting Chromium Version
+  tags: [build-chrome, compress-and-download-chrome]
   shell: |
     sed --regexp-extended 's~[^0-9]+~~g' chrome/VERSION | tr '\n' '.' | sed 's~[.]$~~'
   args:
@@ -49,6 +54,7 @@
 
 # TODO, switch to binutils
 - name: Striping Symbols from Chromium (arm64) Binary
+  tags: build-chrome
   shell: |
     wget https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz
     tar -xf gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz
@@ -57,6 +63,7 @@
     chdir: /srv/source/chromium/src
 
 - name: Compressing Chromium
+  tags: compress-and-download-chrome
   shell: |
     brotli --best --force {{ item }}
   args:
@@ -74,6 +81,7 @@
     - "chromium-{{ version.stdout }}.br"
 
 - name: Archiving OpenGL ES driver
+  tags: compress-and-download-chrome
   shell: |
     tar --directory /srv/source/chromium/src/out/Headless/arm64 --create --file swiftshader.tar libEGL.so libGLESv2.so libvk_swiftshader.so libvulkan.so.1 vk_swiftshader_icd.json
   args:
@@ -81,6 +89,7 @@
     creates: /srv/build/chromium/swiftshader.tar
 
 - name: Compressing OpenGL ES driver
+  tags: compress-and-download-chrome
   shell: |
     brotli --best --force swiftshader.tar
   args:
@@ -88,6 +97,7 @@
     creates: /srv/build/chromium/swiftshader.tar.br
 
 - name: Downloading OpenGL ES driver
+  tags: compress-and-download-chrome
   fetch:
     src: /srv/build/chromium/swiftshader.tar.br
     dest: ../../../bin/arm64/

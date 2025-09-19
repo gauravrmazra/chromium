@@ -15,3 +15,5 @@ examples/**/package-lock.json
 examples/**/.serverless
 docker
 fonts/fonts
+_/ansible/.venv*
+.vscode/*

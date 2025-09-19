@@ -1,6 +1,6 @@
 {
   "name": "@tableau/fork-sparticuz-chromium",
-  "version": "141.0.7382",
+  "version": "141.0.7381",
   "description": "Chromium Binary for Serverless Platforms",
   "keywords": [
     "aws",

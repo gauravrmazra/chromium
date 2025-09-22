@@ -1,6 +1,6 @@
 {
   "name": "@tableau/fork-sparticuz-chromium",
-  "version": "141.0.7381",
+  "version": "141.0.7383",
   "description": "Chromium Binary for Serverless Platforms",
   "keywords": [
     "aws",
@@ -24,7 +24,7 @@
   "author": {
     "name": "Kyle McNally"
   },
-  "type": "module",
+  "type": "commonjs",
   "main": "./build/cjs/index.cjs",
   "module": "./build/esm/index.js",
   "exports": {

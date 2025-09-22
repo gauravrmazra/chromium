@@ -2,7 +2,14 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "rootDir": "./source"
+    "rootDir": "./source",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
-  "include": ["source"]
+  "include": [
+    "source"
+  ],
+  "exclude": [
+    "./source/paths.esm.ts"
+  ]
 }
